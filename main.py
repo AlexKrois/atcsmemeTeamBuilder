@@ -35,11 +35,12 @@ def getPlayerDataFromTournament(championship_id: str, auth: str):
             break
 
         for player in r["items"]:
-            r = requests.get(
-                "https://open.faceit.com/data/v4/players/" + str(player["leader"]),
-                headers=headers,
-            ).json()
-            players_elo_json[r["nickname"]] = r["games"]["cs2"]["faceit_elo"]
+            if player["status"] == "checkedIn":
+                r = requests.get(
+                    "https://open.faceit.com/data/v4/players/" + str(player["leader"]),
+                    headers=headers,
+                ).json()
+                players_elo_json[r["nickname"]] = r["games"]["cs2"]["faceit_elo"]
         offset += 10
         print(str(offset) + " done")
 
