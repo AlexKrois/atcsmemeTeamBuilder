@@ -29,8 +29,8 @@ registerPlugin({
 
         createCommand('moveallusers')
             .addArgument(args => args.string.setName('username'))
-            .help('Register a new user')
-            .manual('Registers a new user bound to the Account you are using. This account has no privileges by default but can be edited by the bot administrators.')
+            .help('Move all users according to their team.')
+            .manual('Moves all registered users to their assigned team channel. ')
             .exec((client, args, reply, ev) => {
                 let users = engine.getUsers();
                 for(let i = 0; i < users.length; i++){
