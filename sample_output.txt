@@ -1,0 +1,83 @@
+Average Elo over all players: 2022.0754716981132
+
+Team 1:
+Benyweny - 2435
+SiGe-fried - 1000
+leimiS- - 1817
+c4ppybara - 2540
+Ezylryb - 2325
+Average Team Elo: 2023.4
+
+Team 2:
+ZeronX - 1628
+Hoffe_ - 1696
+pr1deQ - 2280
+Delayer - 2282
+-n1u- - 2221
+Average Team Elo: 2021.4
+
+Team 3:
+gruzi_ - 1174
+SamraF - 1266
+rizzlas- - 2411
+S3NSEYZjE - 3462
+DeathStrokee - 1816
+Average Team Elo: 2025.8
+
+Team 4:
+Orbiit-_- - 3487
+IdcGoNext- - 2224
+smashK - 1065
+-SmashDown- - 2267
+SNUSMEISTER- - 1067
+Average Team Elo: 2022.0
+
+Team 5:
+ArthaxSkion - 2020
+_s1las_ - 1767
+minif0rest - 1305
+HuNt3rz- - 3002
+Thr4shRR - 2033
+Average Team Elo: 2025.4
+
+Team 6:
+Cheetahxoxo - 2766
+TODESTORPEDO - 2417
+Jegabob - 1140
+tIRREG- - 2447
+kaNjiXIII - 1349
+Average Team Elo: 2023.8
+
+Team 7:
+_fR3Ak_ - 2257
+hihohihi - 2187
+FearTheReal - 1814
+moachlbob - 1213
+Mongol - 2627
+Average Team Elo: 2019.6
+
+Team 8:
+Schnabatzko - 2551
+REAGIeren2k - 2233
+Nigripls - 1393
+zavi - 2316
+Gerne - 1614
+Average Team Elo: 2021.4
+
+Team 9:
+rinukkusu - 1234
+Yoshi_AT - 2837
+dukemarco - 2467
+gRy1337 - 971
+daayz - 2631
+Average Team Elo: 2028.0
+
+Team 10:
+ReacTioNNN - 2707
+ReXzDelta - 1505
+-masta - 2854
+shaak - 2195
+BreadLotion - 780
+Average Team Elo: 2008.2
+
+Benched players: [('bigsmallpp', 1755), ('huby98', 2131), ('gull1extreme', 2189)]

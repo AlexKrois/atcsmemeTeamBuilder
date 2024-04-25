@@ -156,5 +156,5 @@ if __name__ == "__main__":
     players_json = readPlayerDataFromJsonFile("players.json")
     best_teams, benched_players = createBalancedTeams(players_json)
     printCreatedTeams(best_teams, players_json)
-    print(benched_players)
+    print("Benched players: " + str(benched_players))
     createListForTS(best_teams)
