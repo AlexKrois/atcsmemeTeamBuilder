@@ -3,12 +3,13 @@ import json
 import time
 import math
 import random
+from authkey import auth
 
 
-def getPlayerDataFromTournament(championship_id: str, auth: str):
+def getPlayerDataFromTournament(championship_id: str):
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer " + auth,
+        "Authorization": "Bearer " + str(auth),
     }
 
     end = False
@@ -29,18 +30,19 @@ def getPlayerDataFromTournament(championship_id: str, auth: str):
             continue
 
         r = r.json()
+        
 
         if r["items"] == []:
             print("Done")
             break
 
         for player in r["items"]:
-            if player["status"] == "checkedIn":
-                r = requests.get(
-                    "https://open.faceit.com/data/v4/players/" + str(player["leader"]),
-                    headers=headers,
-                ).json()
-                players_elo_json[r["nickname"]] = r["games"]["cs2"]["faceit_elo"]
+            #if player["status"] == "checkedIn":
+            r = requests.get(
+                "https://open.faceit.com/data/v4/players/" + str(player["leader"]),
+                headers=headers,
+            ).json()
+            players_elo_json[r["nickname"]] = r["games"]["cs2"]["faceit_elo"]
         offset += 10
         print(str(offset) + " done")
 
@@ -69,41 +71,26 @@ def getAverageEloFromPlayers(players_json):
     return avg
 
 
-def getTeamCaptains(players_json) -> list:
+def createBalancedTeams(players_json):
     amount_teams = math.floor(len(players_json) / 5)
-    captains = []
-    sorted_players_by_elo = json.dumps(
-        {k: v for k, v in sorted(players_json.items(), key=lambda item: item[1])}
-    )
-    sorted_players_by_elo_json = json.loads(sorted_players_by_elo)
-    captains.append((list(sorted_players_by_elo_json.items())[-amount_teams:]))
-    return captains[0]
-
-
-def getRestPlayers(players_json) -> list:
-    amount_teams = math.floor(len(players_json) / 5)
-    players = []
-    sorted_players_by_elo = json.dumps(
-        {k: v for k, v in sorted(players_json.items(), key=lambda item: item[1])}
-    )
-    sorted_players_by_elo_json = json.loads(sorted_players_by_elo)
-    players.append((list(sorted_players_by_elo_json.items())[:-amount_teams]))
-    return players[0]
-
-
-def createBalancedTeams(players_json, team_count):
     average_elo = getAverageEloFromPlayers(players_json)
 
-    captains = getTeamCaptains(players_json)
-    players = getRestPlayers(players_json)
+    all_players = []
+    for player in players_json:
+        all_players.append((player, players_json[player]))
 
     team_list = []
 
-    for captain in captains:
-        team_list.append([captain])
+    random_players = random.sample(range(len(all_players)), amount_teams)
+    pl_to_remove = []
+    for random_player in random_players:
+        team_list.append([all_players[random_player]])
+        pl_to_remove.append(all_players[random_player])
+
+    all_players = [x for x in all_players if x not in pl_to_remove]
 
     team_counter = 0
-    best_teams = [0] * team_count
+    best_teams = [0] * amount_teams
     for team in team_list:
         team_captain = team[0]
         elo_diff = 2000
@@ -113,9 +100,11 @@ def createBalancedTeams(players_json, team_count):
             team_elo = 0
             avg_team_elo = 0
             counter += 1
-            random_players_idx = random.sample(range(len(players)), 4)
+            random_players_idx = random.sample(range(len(all_players)), 4)
             for i in range(4):
-                team.append(players[random_players_idx[i]])
+                team.append(all_players[random_players_idx[i]])
+            if len(team) != 5:
+                continue
             for player in team:
                 team_elo += player[1]
             avg_team_elo = team_elo / 5
@@ -126,15 +115,13 @@ def createBalancedTeams(players_json, team_count):
             else:
                 team = [team_captain]
             if counter > 200:
-                for player_to_remove in best_teams[team_counter]:
-                    for pl in range(len(players) - 1):
-                        if player_to_remove == players[pl]:
-                            players.pop(pl)
+                all_players = [x for x in all_players if x not in best_teams[team_counter]]
                 end = True
         team_counter += 1
-        if team_counter > 9:
+        if team_counter > amount_teams:
+            print("BROKE")
             break
-    return best_teams
+    return best_teams, all_players
 
 
 def printCreatedTeams(best_teams, players_json):
@@ -153,11 +140,21 @@ def printCreatedTeams(best_teams, players_json):
         print()
         counter += 1
 
+def createListForTS(best_teams):
+    open("tsshit.txt", "w").close()
+    teamchannel_counter = 467
+    for team in best_teams:
+        for player in team:
+            with open("tsshit.txt", "a") as f:
+                f.write("if(username == '" + str(player[0]) + "'){let client = backend.getClientByUID(uid); client.moveTo(" + str(teamchannel_counter) + ")}\n")
+        teamchannel_counter += 1
 
 if __name__ == "__main__":
-    championship_id = "a5542a1b-cdd1-4d23-8351-0f4dc186f027"
-    auth = "*******************"
-    writePlayerDataToJsonFile("players.json", getPlayerDataFromTournament(championship_id, auth))
+    ###Uncomment, wenn neues Turnier erstellt
+    #writePlayerDataToJsonFile("players.json", getPlayerDataFromTournament("a5542a1b-cdd1-4d23-8351-0f4dc186f027"))
+    
     players_json = readPlayerDataFromJsonFile("players.json")
-    best_teams = createBalancedTeams(players_json, 10)
+    best_teams, benched_players = createBalancedTeams(players_json)
     printCreatedTeams(best_teams, players_json)
+    print(benched_players)
+    createListForTS(best_teams)
