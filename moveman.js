@@ -28,18 +28,29 @@ registerPlugin({
         const { createCommand } = command;
 
         createCommand('moveallusers')
-            .addArgument(args => args.string.setName('username'))
             .help('Move all users according to their team.')
             .manual('Moves all registered users to their assigned team channel. ')
             .exec((client, args, reply, ev) => {
-                let users = engine.getUsers();
-                for(let i = 0; i < users.length; i++){
-                      var username = users[i].name();
-                      var tsUid = users[i].tsUid();
-                      var uid = users[i].uid();
-                      //HIER OUTPUT VOM PYTHON PROGRAMM EINFÜGEN!!!!!
+                const EDIT_BOT_SETTINGS = 1 << 16;
+                let allowed = 0;
+                for(let i = 0; i < client.getServerGroups().length; i++){
+                  if(client.getServerGroups()[i].name() === "Hund"){
+                    allowed = 1;
+                  }
+                }
+                if(allowed === 0){
+                  reply("Not allowed");
+                }
+                else{
+                  let users = engine.getUsers();
+                  for(let i = 0; i < users.length; i++){
+                        var username = users[i].name();
+                        var tsUid = users[i].tsUid();
+                        var uid = users[i].uid();
+                        //HIER OUTPUT VOM PYTHON PROGRAMM EINFÜGEN!!!!!
+                        //if(username == 'alexvcs'){let client = backend.getClientByUID(uid); client.moveTo(472)}
 
-
+                  }
                 }
             });
     })
